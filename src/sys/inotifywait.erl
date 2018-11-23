@@ -34,7 +34,7 @@ line_to_event(Line) ->
     Flags = [ E
               || F <- string:tokens(Flags1, ","),
                  E <- convert_flag(F) ],
-    Path = Dir ++ DirEntry,
+    Path = filename:join(Dir, DirEntry),
     {Path, Flags}.
 
 convert_flag(Flag) when is_list(Flag) -> proplists:get_all_values(Flag, pl_rev(?OPTIONS));
