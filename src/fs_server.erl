@@ -8,7 +8,7 @@
 
 notify(EventHandler, file_event = A, Msg) -> Key = {fs, A}, gen_event:notify(EventHandler, {self(), Key, Msg}).
 start_link(Name, EventHandler, Backend, Path, Cwd, Events) -> gen_server:start_link({local, Name}, ?MODULE, [EventHandler, Backend, Path, Cwd, Events], []).
-init([EventHandler, Backend, Path, Cwd]) -> {ok, #state{event_handler=EventHandler,port=Backend:start_port(Path, Cwd),path=Path,backend=Backend}}.
+init([EventHandler, Backend, Path, Cwd, Events]) -> {ok, #state{event_handler=EventHandler,port=Backend:start_port(Path, Cwd, Events),path=Path,backend=Backend}}.
 
 handle_call(known_events, _From, #state{backend=Backend} = State) -> {reply, Backend:known_events(), State};
 handle_call(_Request, _From, State) -> {reply, ok, State}.

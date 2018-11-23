@@ -17,7 +17,7 @@ known_events() -> proplists:get_keys(?OPTIONS).
 start_port(Path, Cwd, Events) ->
     Path1 = filename:absname(Path),
     EventArgs = [ [Option, string:lowercase(EventFlag)]
-                  || Event <- Events,
+                  || E <- Events, Event <- expand(E),
                      is_atom(Event),
                      EventFlag <- convert_flag(Event),
                      Option <- ["-e"] ],
@@ -25,6 +25,9 @@ start_port(Path, Cwd, Events) ->
             "-m", "--quiet", "-r"] ++ EventArgs ++ [Path1],
     erlang:open_port({spawn_executable, os:find_executable("sh")},
         [stream, exit_status, {line, 16384}, {args, Args}, {cd, Cwd}]).
+
+expand(default) -> [created,deleted,modified,renamed,attribute];
+expand(Other) -> Other.
 
 line_to_event(Line) ->
     {match, [Dir, Flags1, DirEntry]} = re:run(Line, re(), [{capture, all_but_first, list}]),
