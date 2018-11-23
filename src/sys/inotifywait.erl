@@ -18,7 +18,8 @@ known_events() -> proplists:get_keys(pl_rev(?OPTIONS)).
 start_port(Path, Cwd, Events) ->
     Path1 = filename:absname(Path),
     EventArgs = [ [Option, string:lowercase(EventFlag)]
-                  || E <- Events, Event <- expand(E),
+                  || E <- Events,
+                     Event <- expand(E),
                      is_atom(Event),
                      EventFlag <- convert_flag(Event),
                      Option <- ["-e"] ],
@@ -28,7 +29,8 @@ start_port(Path, Cwd, Events) ->
         [stream, exit_status, {line, 16384}, {args, Args}, {cd, Cwd}]).
 
 expand(default) -> [created,deleted,modified,renamed,attribute];
-expand(Other) -> Other.
+expand(List) when is_list(List) -> List;
+expand(Atom) when is_atom(Atom) -> [Atom].
 
 line_to_event(Line) ->
     {match, [Dir, Flags1, DirEntry]} = re:run(Line, re(), [{capture, all_but_first, list}]),
@@ -55,6 +57,5 @@ pl_rev(PList) ->
     = lists:unzip(
         [ {Key, Val}
           || Key <- proplists:get_keys(PList),
-             All <- proplists:get_all_values(Key, PList),
-             Val <- All ]),
+             Val <- proplists:get_all_values(Key, PList) ]),
     lists:zip(Vals, Keys).
