@@ -2,18 +2,18 @@
 -include("include/api.hrl").
 -export(?API).
 -define(OPTIONS,
-        [{created, "CREATE"},
-         {deleted, "DELETE"},
-         {isdir, "ISDIR"},
-         {modified, "MODIFY"},
-         {modified, "CLOSE_WRITE"},
-         {closed, "CLOSE"},
-         {renamed, "MOVED_TO"},
-         {opened, "OPEN"},
-         {attribute, "ATTRIB"}]).
+        [{"CREATE"     , created  },
+         {"DELETE"     , deleted  },
+         {"ISDIR"      , isdir    },
+         {"MODIFY"     , modified },
+         {"CLOSE_WRITE", modified },
+         {"CLOSE"      , closed   },
+         {"MOVED_TO"   , renamed  },
+         {"OPEN"       , opened   },
+         {"ATTRIB"     , attribute}]).
 
 find_executable() -> os:find_executable("inotifywait").
-known_events() -> proplists:get_keys(?OPTIONS).
+known_events() -> proplists:get_keys(pl_rev(?OPTIONS)).
 
 start_port(Path, Cwd, Events) ->
     Path1 = filename:absname(Path),
@@ -38,8 +38,8 @@ line_to_event(Line) ->
     Path = filename:join(Dir, DirEntry),
     {Path, Flags}.
 
-convert_flag(Flag) when is_list(Flag) -> proplists:get_all_values(Flag, pl_rev(?OPTIONS));
-convert_flag(Flag) when is_atom(Flag) -> proplists:get_all_values(Flag, ?OPTIONS).
+convert_flag(Flag) when is_list(Flag) -> proplists:get_all_values(Flag, ?OPTIONS);
+convert_flag(Flag) when is_atom(Flag) -> proplists:get_all_values(Flag, pl_rev(?OPTIONS)).
 
 re() ->
     case get(inotifywait_re) of
