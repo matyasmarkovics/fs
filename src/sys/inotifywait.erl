@@ -9,6 +9,7 @@
          {modified, "CLOSE_WRITE"},
          {closed, "CLOSE"},
          {renamed, "MOVED_TO"},
+         {opened, "OPEN"},
          {attribute, "ATTRIB"}]).
 
 find_executable() -> os:find_executable("inotifywait").
