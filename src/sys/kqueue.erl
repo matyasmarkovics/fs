@@ -7,6 +7,6 @@ line_to_event(Line) ->
     io:format("Line: ~p~n",[Line]),
     {".",Line}.
 find_executable() -> fs:find_executable("kqueue", "deps/fs/priv/kqueue").
-start_port(Path, Cwd) ->
+start_port(Path, Cwd, _) ->
     erlang:open_port({spawn_executable, find_executable()},
         [stream, exit_status, {line, 16384}, {args, [Path]}, {cd, Cwd}]).

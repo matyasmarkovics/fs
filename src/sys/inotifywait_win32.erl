@@ -7,7 +7,7 @@ find_executable() ->
 
 known_events() -> [created, modified, removed, renamed, undefined].
 
-start_port(Path, Cwd) ->
+start_port(Path, Cwd, _) ->
     Path1 = filename:absname(Path),
     Args = ["-m", "-r", Path1],
     erlang:open_port({spawn_executable, find_executable()},

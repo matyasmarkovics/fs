@@ -10,7 +10,7 @@ known_events() ->
         mount,unmount,created,removed,inodemetamod,renamed,modified,finderinfomod,changeowner,
         xattrmod,isfile,isdir,issymlink,ownevent].
 
-start_port(Path, Cwd) ->
+start_port(Path, Cwd, _) ->
     erlang:open_port({spawn_executable, find_executable()},
         [stream, exit_status, {line, 16384}, {args, ["-F", Path]}, {cd, Cwd}]).
 

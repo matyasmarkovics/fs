@@ -1,13 +1,13 @@
 -module(fs_server).
 -behaviour(gen_server).
 -define(SERVER, ?MODULE).
--export([start_link/5]).
+-export([start_link/6]).
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,terminate/2, code_change/3]).
 
 -record(state, {event_handler, port, path, backend}).
 
 notify(EventHandler, file_event = A, Msg) -> Key = {fs, A}, gen_event:notify(EventHandler, {self(), Key, Msg}).
-start_link(Name, EventHandler, Backend, Path, Cwd) -> gen_server:start_link({local, Name}, ?MODULE, [EventHandler, Backend, Path, Cwd], []).
+start_link(Name, EventHandler, Backend, Path, Cwd, Events) -> gen_server:start_link({local, Name}, ?MODULE, [EventHandler, Backend, Path, Cwd, Events], []).
 init([EventHandler, Backend, Path, Cwd]) -> {ok, #state{event_handler=EventHandler,port=Backend:start_port(Path, Cwd),path=Path,backend=Backend}}.
 
 handle_call(known_events, _From, #state{backend=Backend} = State) -> {reply, Backend:known_events(), State};
